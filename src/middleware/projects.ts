@@ -19,7 +19,7 @@ export async function validateProjectExist(req: Request, res: Response, next: Ne
 
     if (!project) {
       const error = new Error('Este proyecto no se pudo verificar')
-      res.status(500).json({ error: error.message })
+      return res.status(500).json({ error: error.message })
     }
 
     req.project = project

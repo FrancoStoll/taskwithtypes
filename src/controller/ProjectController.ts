@@ -8,6 +8,7 @@ export class ProjectController {
 
     const project = new Project(req.body);
 
+ 
     try {
       await project.save();
       return res.send('Projecto creado correctamente')
@@ -37,7 +38,7 @@ export class ProjectController {
 
     try {
 
-      const project = await Project.findById(id)
+      const project = await Project.findById(id).populate('tasks')
 
       if (!project) {
         const error = new Error('No hay proyecto con ese ID')
@@ -57,11 +58,14 @@ export class ProjectController {
 
     try {
 
-      const project = await Project.findByIdAndUpdate(id, req.body)
+      const project = await Project.findById(id)
       if (!project) {
         const error = new Error('No hay proyecto con ese ID')
         return res.status(404).json({ error: error.message })
       }
+      project.clientName = req.body.clientName
+      project.projectName = req.body.projectName
+      project.description = req.body.description
       await project.save()
       res.send('Proyecto Actualizado')
 

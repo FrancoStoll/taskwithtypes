@@ -4,11 +4,15 @@ import { connectDB } from "./config/db"
 import cors from 'cors'
 import projectRoutes from './routes/project.routes'
 import { corsConfig } from "./config/cors"
+import morgan from "morgan"
 dotenv.config()
 connectDB()
 const app = express()
 app.use(cors(corsConfig))
 app.use(express.json())
+
+//Loggin
+app.use(morgan('dev'))
 
 //Routes
 app.use('/api/projects', projectRoutes)

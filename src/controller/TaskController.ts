@@ -37,7 +37,13 @@ export class TaskController {
 
   static getTasksById = async (req: Request, res: Response) => {
     try {
-      res.json(req.task)
+
+      const task = await Task.findById(req.task.id).populate({
+        path: 'completedBy.user', select: 'id name email'
+      }).populate({ path: 'notes', populate: { path: 'createdBy', select: 'id name email' } })
+
+      res.json(task)
+
     } catch (error) {
       res.status(500).json({ error: 'Hubo un error' })
     }
@@ -46,6 +52,7 @@ export class TaskController {
 
   static updateTask = async (req: Request, res: Response) => {
     try {
+
       req.task.name = req.body.name
       req.task.description = req.body.description
       await req.task.save()
@@ -73,7 +80,14 @@ export class TaskController {
   static updateTaskStatus = async (req: Request, res: Response) => {
     try {
       const { status } = req.body
+      const data = {
+        user: req.user.id,
+        status: status
+      }
       req.task.status = status
+
+      req.task.completedBy.push(data)
+
       await req.task.save()
       res.send('Tarea actualizada')
 

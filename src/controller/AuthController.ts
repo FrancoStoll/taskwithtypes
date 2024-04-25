@@ -18,10 +18,14 @@ export class AuthController {
         return res.status(409).json({ error: error.message })
       }
 
+
+
       const user = new User(req.body)
 
       // Hash password
       user.password = await hashPassword(req.body.password)
+
+
 
       // Generar token
       const token = new Token()

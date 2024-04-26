@@ -69,7 +69,28 @@ router.post('/update-password/:token',
   AuthController.updatePasswordWithToken)
 
 
-  router.get('/user', autheticate, AuthController.user)
+router.get('/user', autheticate, AuthController.user)
 
+
+// Profile
+
+router.put('/profile',
+  autheticate, body('name').notEmpty().withMessage('El nombre no puede ir vacio'),
+  body('email').isEmail().withMessage('El email no válido'),
+  AuthController.uodateProfile)
+
+router.post('/update-password', autheticate,
+  body('current_password').notEmpty().withMessage('Este password no puede ir vacio'),
+  body('password').isLength({ min: 6 }).withMessage('El password debe tener almenos 6 caracteres'),
+  body('password_confirmation').custom((value, { req }) => {
+    if (value !== req.body.password) {
+      throw new Error('Los password no son iguales')
+    }
+    return true
+
+  }),
+  handleInputsErrors,
+  AuthController.updateCurrentUserPassword
+)
 
 export default router

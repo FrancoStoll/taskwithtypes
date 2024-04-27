@@ -79,7 +79,7 @@ router.put('/profile',
   body('email').isEmail().withMessage('El email no válido'),
   AuthController.uodateProfile)
 
-router.post('/update-password', autheticate,
+router.put('/update-password', autheticate,
   body('current_password').notEmpty().withMessage('Este password no puede ir vacio'),
   body('password').isLength({ min: 6 }).withMessage('El password debe tener almenos 6 caracteres'),
   body('password_confirmation').custom((value, { req }) => {
@@ -91,6 +91,13 @@ router.post('/update-password', autheticate,
   }),
   handleInputsErrors,
   AuthController.updateCurrentUserPassword
+)
+
+router.post('/check-password',
+  autheticate,
+  body('password').notEmpty().withMessage('Este password no puede ir vacio'),
+  handleInputsErrors,
+  AuthController.checkPassword
 )
 
 export default router
